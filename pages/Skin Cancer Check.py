@@ -103,7 +103,7 @@ col1, col2 = st.columns([1, 1.5])
 
 with col1:
     st.markdown("<h4 style='text-align:center;'>📷 Uploaded/Captured Image</h4>", unsafe_allow_html=True)
-    st.image(image_source, width=250, use_column_width=True)
+    st.image(image_source, width=250, use_container_width=True)
     
     # "Predict" Button (in Left Column)
     if st.button('🔍 Predict'):
