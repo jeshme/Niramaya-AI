@@ -67,7 +67,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ---- Google Gemini-Pro API Setup ----
-GOOGLE_API_KEY = 'AIzaSyClRWm6773t7l18M4bZAO0P8HM02T-fRqY'
+GOOGLE_API_KEY = ''
 gen_ai.configure(api_key=GOOGLE_API_KEY)
 model = gen_ai.GenerativeModel('gemini-2.0-flash-thinking-exp-01-21')
 
