@@ -84,7 +84,7 @@ feature_weights = {
 def email_alert(date, severity_percentage, symptoms, user_name):
     email_sender = "99220040285@klu.ac.in"
     email_password = "lema ezno hqyo wopk"
-    email_recipient = "hfutureready@gmail.com"
+    email_recipient = "99220040285@klu.ac.in"
     subject = f" Niramaya Asthma Alert for {user_name} - {date}"
     body = f"""
 Dear Doctor,
@@ -188,3 +188,4 @@ if st.button('🔍 Predict Severity'):
             </div>   
                     
         """, unsafe_allow_html=True)
+
