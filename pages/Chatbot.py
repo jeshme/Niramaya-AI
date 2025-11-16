@@ -11,7 +11,7 @@ else:
     gen_ai.configure(api_key=GOOGLE_API_KEY)
 
 # Select Gemini Model
-model = gen_ai.GenerativeModel('gemini-2.0-flash-thinking-exp-01-21')
+model = gen_ai.GenerativeModel('gemini-2.5-flash')
 
 # ---- Streamlit Page Configuration ----
 st.set_page_config(
