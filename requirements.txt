@@ -2,3 +2,4 @@ tensorflow
 pillow
 streamlit_lottie
 google-generativeai
+python-dotenv
