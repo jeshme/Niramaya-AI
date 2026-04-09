@@ -1,10 +1,6 @@
 import streamlit as st
 import google.generativeai as gen_ai
 import os
-from dotenv import load_dotenv
-
-# ---- Load Environment Variables ----
-load_dotenv()
 
 # ---- Streamlit Page Configuration ----
 st.set_page_config(
@@ -13,27 +9,37 @@ st.set_page_config(
     layout="centered",
 )
 
-# ---- Get API Key Securely ----
-GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+# ---- Get API Key (Supports BOTH local .env & Streamlit secrets) ----
+GOOGLE_API_KEY = None
 
+# 1. Try Streamlit secrets (for deployment)
+if "GOOGLE_API_KEY" in st.secrets:
+    GOOGLE_API_KEY = st.secrets["GOOGLE_API_KEY"]
+
+# 2. Fallback to local .env (for development)
+else:
+    from dotenv import load_dotenv
+    load_dotenv()
+    GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+
+# ---- Error if key missing ----
 if not GOOGLE_API_KEY:
-    st.error("❌ API Key not found! Please check your .env file.")
+    st.error("❌ API Key not found! Add it in .env (local) or secrets.toml (deploy)")
     st.stop()
 
+# ---- Configure Gemini ----
 gen_ai.configure(api_key=GOOGLE_API_KEY)
 
-# ---- Use Stable Model ----
 model = gen_ai.GenerativeModel("models/gemini-2.5-flash")
 
 # ---- Initialize Chat Session ----
 if "chat_session" not in st.session_state:
     st.session_state.chat_session = model.start_chat(history=[])
 
-# ---- Custom Styling ----
+# ---- UI Styling ----
 st.markdown("""
     <style>
         body { background-color: #121212; color: white; }
-
         .title-container {
             text-align: center;
             font-size: 36px;
@@ -43,7 +49,6 @@ st.markdown("""
             -webkit-text-fill-color: transparent;
             margin-bottom: 20px;
         }
-
         .user-message { 
             background-color: #2A2A2A; 
             padding: 12px; 
@@ -51,7 +56,6 @@ st.markdown("""
             margin-bottom: 15px;
             border-left: 5px solid #B266FF;
         }
-
         .ai-message { 
             background-color: #222; 
             border-left: 5px solid #00D4FF;
@@ -59,7 +63,6 @@ st.markdown("""
             border-radius: 8px; 
             margin-bottom: 15px;
         }
-
         .ai-header {
             font-weight: bold; 
             color: #00D4FF;
@@ -80,7 +83,7 @@ st.sidebar.warning("⚠️ This chatbot is for informational purposes only.")
 # ---- Title ----
 st.markdown('<div class="title-container">NIRAMAYA AI CHATBOT</div>', unsafe_allow_html=True)
 
-# ---- Display Chat History ----
+# ---- Display Chat ----
 for message in st.session_state.chat_session.history:
     role = "assistant" if message.role == "model" else message.role
     text = message.parts[0].text
@@ -90,7 +93,7 @@ for message in st.session_state.chat_session.history:
     else:
         st.markdown(f'<div class="ai-message"><div class="ai-header">NIRAMAYA AI</div>{text}</div>', unsafe_allow_html=True)
 
-# ---- User Input ----
+# ---- Input ----
 user_prompt = st.chat_input("Ask something...")
 
 if user_prompt:
