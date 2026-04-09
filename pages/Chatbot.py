@@ -1,6 +1,10 @@
 import streamlit as st
 import google.generativeai as gen_ai
 import os
+from dotenv import load_dotenv
+
+# ---- Load Environment Variables ----
+load_dotenv()
 
 # ---- Streamlit Page Configuration ----
 st.set_page_config(
@@ -9,8 +13,12 @@ st.set_page_config(
     layout="centered",
 )
 
-# ---- Google Gemini-Pro API Setup ----
-GOOGLE_API_KEY = 'AIzaSyDzLx3TvGOOTba1jWlC0FnY5w5mZkJ6lDs'
+# ---- Get API Key Securely ----
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+
+if not GOOGLE_API_KEY:
+    st.error("❌ API Key not found! Please check your .env file.")
+    st.stop()
 
 gen_ai.configure(api_key=GOOGLE_API_KEY)
 
@@ -86,15 +94,12 @@ for message in st.session_state.chat_session.history:
 user_prompt = st.chat_input("Ask something...")
 
 if user_prompt:
-    # Show user message
     st.markdown(f'<div class="user-message"><b>You:</b> {user_prompt}</div>', unsafe_allow_html=True)
 
-    # Generate response safely
     try:
         response = st.session_state.chat_session.send_message(user_prompt)
         bot_reply = response.text
     except Exception as e:
         bot_reply = f"⚠️ Error: {str(e)}"
 
-    # Show bot response
     st.markdown(f'<div class="ai-message"><div class="ai-header">NIRAMAYA AI</div>{bot_reply}</div>', unsafe_allow_html=True)
